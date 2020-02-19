@@ -3,6 +3,8 @@ package com.tiscon.controller;
 import com.tiscon.dao.EstimateDao;
 import com.tiscon.dto.UserOrderDto;
 import com.tiscon.form.UserOrderForm;
+import com.tiscon.form.UserOrderFormname;
+import com.tiscon.form.UserOrderFormlug;
 import com.tiscon.service.EstimateService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
@@ -39,7 +41,6 @@ public class EstimateController {
     String index(Model model) {
         return "top";
     }
-
     /**
      * 入力画面に遷移する。
      *
@@ -57,6 +58,52 @@ public class EstimateController {
     }
 
     /**
+     * 個人入力画面に遷移する。
+     *
+     * @param model 遷移先に連携するデータ
+     * @return 遷移先
+     */
+    @GetMapping("inputname")
+    String inputname(Model model) {
+        if (!model.containsAttribute("userOrderFormname")) {
+            model.addAttribute("userOrderFormname", new UserOrderFormname());
+        }
+
+        model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+        return "inputname";
+    }
+    /**
+     * 個人確認画面に遷移する。
+     *
+     * @param userOrderFormname 顧客が入力した見積もり依頼情報
+     * @param model         遷移先に連携するデータ
+     * @return 遷移先
+     */
+    @PostMapping(value = "submit", params = "confirmname")
+    String confirmname(UserOrderFormname userOrderFormname, Model model) {
+
+        model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+        model.addAttribute("userOrderFormname", userOrderFormname);
+        return "confirmname";
+    }
+
+    /**
+     * 荷物入力画面に遷移する。
+     *
+     * @param model 遷移先に連携するデータ
+     * @return 遷移先
+     */
+    @GetMapping("inputlug")
+    String inputlug(Model model) {
+        if (!model.containsAttribute("userOrderFormlug")) {
+            model.addAttribute("userOrderFormlug", new UserOrderFormlug());
+        }
+
+        model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+        return "inputlug";
+    }
+
+    /**
      * TOP画面に戻る。
      *
      * @param model 遷移先に連携するデータ
@@ -68,32 +115,31 @@ public class EstimateController {
     }
 
     /**
-     * 確認画面に遷移する。
+     * 荷物確認画面に遷移する。
      *
      * @param userOrderForm 顧客が入力した見積もり依頼情報
      * @param model         遷移先に連携するデータ
      * @return 遷移先
      */
-    @PostMapping(value = "submit", params = "confirm")
-    String confirm(UserOrderForm userOrderForm, Model model) {
+    @PostMapping(value = "submit", params = "confirmlug")
+    String confirmlug(UserOrderFormlug userOrderFormlug, Model model) {
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-        model.addAttribute("userOrderForm", userOrderForm);
-        return "confirm";
+        model.addAttribute("userOrderFormlug", userOrderFormlug);
+        return "confirmlug";
     }
-
     /**
      * 入力画面に戻る。
      *
-     * @param userOrderForm 顧客が入力した見積もり依頼情報
+     * @param userOrderFormlug 顧客が入力した見積もり依頼情報
      * @param model         遷移先に連携するデータ
      * @return 遷移先
      */
     @PostMapping(value = "result", params = "backToInput")
-    String backToInput(UserOrderForm userOrderForm, Model model) {
+    String backToInput(UserOrderFormlug userOrderFormlug, Model model) {
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-        model.addAttribute("userOrderForm", userOrderForm);
-        return "input";
+        model.addAttribute("userOrderFormlug", userOrderFormlug);
+        return "inputlug";
     }
 
     /**
@@ -103,12 +149,12 @@ public class EstimateController {
      * @param model         遷移先に連携するデータ
      * @return 遷移先
      */
-    @PostMapping(value = "order", params = "backToConfirm")
+    /**@PostMapping(value = "order", params = "backToConfirm")
     String backToConfirm(UserOrderForm userOrderForm, Model model) {
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
-        return "confirm";
-    }
+        return "confirmname";
+    }*/
 
     /**
      * 概算見積もり画面に遷移する。
@@ -119,12 +165,12 @@ public class EstimateController {
      * @return 遷移先
      */
     @PostMapping(value = "result", params = "calculation")
-    String calculation(@Validated UserOrderForm userOrderForm, BindingResult result, Model model) {
+    String calculation(@Validated UserOrderFormlug userOrderFormlug, BindingResult result, Model model) {
         if (result.hasErrors()) {
 
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-            model.addAttribute("userOrderForm", userOrderForm);
-            return "confirm";
+            model.addAttribute("userOrderFormlug", userOrderFormlug);
+            return "confirmname";
         }
 
         //料金の計算を行う。
@@ -152,7 +198,7 @@ public class EstimateController {
 
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
             model.addAttribute("userOrderForm", userOrderForm);
-            return "confirm";
+            return "confirmname";
         }
 
         UserOrderDto dto = new UserOrderDto();
