@@ -46,14 +46,14 @@ public class EstimateController {
      * @param model 遷移先に連携するデータ
      * @return 遷移先
      */
-    @GetMapping("input")
-    String input(Model model) {
+    @GetMapping("input_name")
+    String input_name(Model model) {
         if (!model.containsAttribute("userOrderForm")) {
             model.addAttribute("userOrderForm", new UserOrderForm());
         }
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-        return "input";
+        return "input_name";
     }
 
     /**

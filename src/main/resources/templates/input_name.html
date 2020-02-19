@@ -14,7 +14,8 @@
 <nav th:insert="header.html :: header"></nav>
 <div class="container">
   <form th:action="@{/submit}" th:object="${userOrderForm}" class="form-horizontal" method="post">
-    <h1>お見積り情報入力</h1>
+    <h1>お客様情報入力</h1>
+    <font size="-1" color="#ff0000">数字は半角で記入してください</font>
     <ul th:if="${#fields.hasErrors('all')}">
       <li th:each="err : ${#fields.errors('all')}" th:text="${err}"></li>
     </ul>
@@ -22,67 +23,48 @@
       <fieldset>
         <legend>個人情報</legend>
         <div class="form-group">
-          <label for="customerName">氏名</label>
-          <input type="text" id="customerName" name="customerName" th:field="*{customerName}" class="form-control" value="山田太郎"/>
+          <label for="customerName_mei">姓</label>
+          <input type="text" id="customerName_mei" name="customerName" style="width: 100px" th:field="*{customerName}" class="form-control" value="山田"/>
+          <label for="customerName_sei">名</label>
+          <input type="text" id="customerName_sei" name="customerName" style="width: 100px" th:field="*{customerName}" class="form-control" value="太郎"/>
+          <label for="customerName_mei_kana">せい</label>
+          <input type="text" id="customerName_mei_kana" name="customerName" style="width: 100px" th:field="*{customerName}" class="form-control" value="やまだ"/>
+          <label for="customerName_sei_kana">かな</label>
+          <input type="text" id="customerName_sei_kana" name="customerName" style="width: 100px" th:field="*{customerName}" class="form-control" value="たろう"/>
         </div>
         <div class="form-group">
           <label for="tel">連絡先TEL</label>
-          <input type="tel" id="tel" name="tel" th:field="*{tel}" class="form-control" value="03-1234-5678"/>
+          <font size="-1" color="#ff0000">ハイフンなしで入力してください（例:080×××××××）</font>
+          <input type="tel" id="tel" name="tel" th:field="*{tel}" class="form-control" value="03-1234-5678" style="width: 400px"/>
         </div>
         <div class="form-group">
           <label for="email">連絡先メールアドレス</label>
-          <input type="text" id="email" name="email" th:field="*{email}" class="form-control" value="test@test.com"/>
+          <input type="text" id="email" name="email" th:field="*{email}" class="form-control" value="test@test.com" style="width: 600px"/>
         </div>
         <div class="form-group">
-          <label for="oldPrefectureId">転居元住所（都道府県）</label>
-          <select id="oldPrefectureId" name="oldPrefectureId" class="form-control">
+          <label for="oldPrefectureId">現在お住いの住所（都道府県）</label>
+          <select id="oldPrefectureId" name="oldPrefectureId" class="form-control" style="width: 200px">
             <option th:each="prefecture : ${prefectures}" th:value="${prefecture.prefectureId}" th:field="*{oldPrefectureId}">[[${prefecture.prefectureName}]]</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="oldAddress">転居元住所（市区町村以下）</label>
+          <label for="oldAddress">現在お住まいの住所（市区町村以下）</label>
           <input type="text" id="oldAddress" name="oldAddress" th:field="*{oldAddress}"
                  class="form-control" value="新宿区西新宿1-1-1"/>
         </div>
         <div class="form-group">
-          <label for="newPrefectureId">転居先住所（都道府県）</label>
-          <select id="newPrefectureId" name="newPrefectureId" class="form-control">
+          <label for="newPrefectureId">お引越し先の住所（都道府県）</label>
+          <select id="newPrefectureId" name="newPrefectureId" class="form-control" style="width: 200px">
             <option th:each="prefecture : ${prefectures}" th:value="${prefecture.prefectureId}" th:field="*{newPrefectureId}">[[${prefecture.prefectureName}]]</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="newAddress">転居先住所（市区町村以下）</label>
-          <input type="text" id="newAddress" name="newAddress" th:field="*{newAddress}" class="form-control"
+          <label for="newAddress">お引越し先の住所（市区町村以下）</label>
+          <input type="text" id="newAddress" name="newAddress" th:field="*{newAddress}" class="form-control" style="width: 600px"
                  value="札幌市南区1"/>
         </div>
       </fieldset>
-      <fieldset>
-        <legend>荷物情報</legend>
-        <div class="form-group">
-          <label for="box">段ボールの個数</label>
-          <input type="text" id="box" name="box" th:field="*{box}" class="form-control" value="10"/>
-        </div>
-        <div class="form-group">
-          <label for="bed">ベッドの個数</label>
-          <input type="text" id="bed" name="bed" th:field="*{bed}" class="form-control" value="3"/>
-        </div>
-        <div class="form-group">
-          <label for="bicycle">自転車の個数</label>
-          <input type="text" id="bicycle" name="bicycle" th:field="*{bicycle}" class="form-control" value="1"/>
-        </div>
-        <div class="form-group">
-          <label for="washingMachine">洗濯機の個数</label>
-          <input type="text" id="washingMachine" name="washingMachine" th:field="*{washingMachine}" class="form-control"
-                 value="1"/>
-        </div>
-        <div class="form-group">
-          <label for="washingMachineInstallation">洗濯機の設置工事申し込み</label>
-          <select id="washingMachineInstallation" name="washingMachineInstallation" class="form-control" th:field="*{washingMachineInstallation}">
-            <option th:value="false" th:text="なし">なし</option>
-            <option th:value="true" th:text="あり">あり</option>
-          </select>
-        </div>
-      </fieldset>
+
       <div class="form-group">
         <div class="text-center">
           <button type="submit" name="backToTop" class="btn btn-primary">TOPへ戻る</button>
