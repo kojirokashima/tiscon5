@@ -3,7 +3,7 @@ package com.tiscon.controller;
 import com.tiscon.dao.EstimateDao;
 import com.tiscon.dto.UserOrderDto;
 import com.tiscon.form.UserOrderFormname;
-import com.tiscon.form.UserOrderFormlug;
+import com.tiscon.form.UserOrderForm;
 import com.tiscon.service.EstimateService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
@@ -77,12 +77,14 @@ public class EstimateController {
      * @param model 遷移先に連携するデータ
      * @return 遷移先
      */
-    @GetMapping("input_lug")
-    String input_lug(Model model) {
-        if (!model.containsAttribute("userOrderFormlug")) {
-            model.addAttribute("userOrderFormlug", new UserOrderFormlug());
+    @PostMapping(value = "submit", params = "input_lug")
+    String input_lug(UserOrderFormname userOrderFormname, Model model) {
+        if (!model.containsAttribute("userOrderForm")) {
+            model.addAttribute("userOrderForm", new UserOrderForm());
         }
-
+        UserOrderForm userOrderForm = new UserOrderForm();
+        BeanUtils.copyProperties(userOrderFormname, userOrderForm);
+        model.addAttribute("userOrderForm", userOrderForm);
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         return "input_lug";
     }
@@ -106,39 +108,39 @@ public class EstimateController {
      * @return 遷移先
      */
     @PostMapping(value = "submit", params = "confirm_lug")
-    String confirm_lug(UserOrderFormlug userOrderFormlug, Model model) {
+    String confirm_lug(UserOrderForm userOrderForm, Model model) {
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-        model.addAttribute("userOrderFormlug", userOrderFormlug);
+        model.addAttribute("userOrderForm", userOrderForm);
         return "confirm_lug";
     }
     /**
      * 個人情報入力画面に戻る。
      *
-     * @param userOrderFormlug 顧客が入力した見積もり依頼情報
+     * @param userOrderFormname 顧客が入力した見積もり依頼情報
      * @param model         遷移先に連携するデータ
      * @return 遷移先
      */
     @PostMapping(value = "submit", params = "backToInputname")
-    String backToInput(UserOrderFormname userOrderFormname, Model model) {
+    String backToInputname(UserOrderFormname userOrderFormname, Model model) {
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderFormname", userOrderFormname);
         return "input_name";
     }
 
     /**
-     * 確認画面に戻る。
+     * 荷物情報入力画面に戻る。
      *
      * @param userOrderForm 顧客が入力した見積もり依頼情報
      * @param model         遷移先に連携するデータ
      * @return 遷移先
      */
-    /**@PostMapping(value = "order", params = "backToConfirm")
-    String backToConfirm(UserOrderForm userOrderForm, Model model) {
+    @PostMapping(value = "result", params = "backToInputlug")
+    String backToInputlug(UserOrderForm userOrderForm, Model model) {
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
-        return "confirm_name";
-    }*/
+        return "input_lug";
+    }
 
     /**
      * 概算見積もり画面に遷移する。
@@ -149,21 +151,21 @@ public class EstimateController {
      * @return 遷移先
      */
     @PostMapping(value = "result", params = "calculation")
-    String calculation(@Validated UserOrderFormlug userOrderFormlug, BindingResult result, Model model) {
+    String calculation(@Validated UserOrderForm userOrderForm, BindingResult result, Model model) {
         if (result.hasErrors()) {
 
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-            model.addAttribute("userOrderFormlug", userOrderFormlug);
+            model.addAttribute("userOrderForm", userOrderForm);
             return "confirm_name";
         }
 
         //料金の計算を行う。
         UserOrderDto dto = new UserOrderDto();
-        BeanUtils.copyProperties(userOrderFormlug, dto);
+        BeanUtils.copyProperties(userOrderForm, dto);
         Integer price = estimateService.getPrice(dto);
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-        model.addAttribute("userOrderFormlug", userOrderFormlug);
+        model.addAttribute("userOrderForm", dto);
         model.addAttribute("price", price);
         return "result";
     }
@@ -177,16 +179,16 @@ public class EstimateController {
      * @return 遷移先
      */
     @PostMapping(value = "order", params = "complete")
-    String complete(@Validated UserOrderFormlug userOrderFormlug, BindingResult result, Model model) {
+    String complete(@Validated UserOrderForm userOrderForm, BindingResult result, Model model) {
         if (result.hasErrors()) {
 
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
-            model.addAttribute("userOrderFormlug", userOrderFormlug);
+            model.addAttribute("userOrderForm", userOrderForm);
             return "confirm_name";
         }
 
         UserOrderDto dto = new UserOrderDto();
-        BeanUtils.copyProperties(userOrderFormlug, dto);
+        BeanUtils.copyProperties(userOrderForm, dto);
         estimateService.registerOrder(dto);
 
         return "complete";

@@ -16,7 +16,15 @@
   <form th:action="@{/order}" th:object="${userOrderForm}" class="form-horizontal" method="post">
     <h1>概算お見積り結果</h1>
     <div class="col-sm-12">
-      <h2>概算お見積り結果は<span th:text="${price}"></span>円です。</h2>
+      <h2>概算お見積り結果は<font size="20" color="#ff0000" th:text="${price}"></font>円です。</h2>
+      <label for="bed">電話対応可能な時間の指定をお願いします。</label>
+      <select id="tel2" name="tel2" th:field="*{tel2}" class="tel2">
+        <option th:value="午前中" th:text="午前中">午前中</option>
+        <option th:value="午後" th:text="午後">午後</option>
+        <option th:value="夕方" th:text="夕方">夕方</option>
+        <option th:value="夜" th:text="夜">夜</option>
+        <option th:value="上記の時間全て可能" th:text="上記の時間全て可能">上記の時間全て可能</option>
+      </select>
       <h4>個人情報</h4>
       <table class="table table-bordered">
         <col span="1" style="background-color: #A9B7C7;">

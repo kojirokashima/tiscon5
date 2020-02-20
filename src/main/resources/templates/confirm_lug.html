@@ -51,10 +51,14 @@
                 </tr>
                 </tbody>
             </table>
+            <input type="hidden" name="customerName_sei" th:field="*{customerName_sei}" />
+            <input type="hidden" name="customerName_mei" th:field="*{customerName_mei}" />
+            <input type="hidden" name="customerName_sei_kana" th:field="*{customerName_sei_kana}" />
+            <input type="hidden" name="customerName_mei_kana" th:field="*{customerName_mei_kana}"
             <div class="form-group">
                 <div class="text-center">
-                    <button type="submit" name="backToInput" class="btn btn-primary">修正</button>
-                    <button type="submit" name="calculation" class="btn btn-primary">概算見積もりをする</button>
+                    <button type="result" name="backToInputlug" class="btn btn-primary">修正</button>
+                    <button type="result" name="calculation" class="btn btn-primary">概算見積もりをする</button>
                 </div>
             </div>
         </div>
